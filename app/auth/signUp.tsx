@@ -1,6 +1,5 @@
 import GoogleIcon from '@/assets/images/googleIcon.png';
 import { Colors } from '@/constants/colors';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -12,11 +11,7 @@ import {
   View,
 } from 'react-native';
 import { _signInWithGoogle, _signUpWithEmailAndPassword } from './actions';
-import { SignUpWithCredentials } from './props';
-
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
-});
+import { SignUpWithCredentials } from './types';
 
 export default function SignUpScreen() {
   const router = useRouter();

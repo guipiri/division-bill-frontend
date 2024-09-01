@@ -1,4 +1,5 @@
 import { Colors } from '@/constants/colors';
+import { UserContextProvider } from '@/contexts/UserContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -45,35 +46,37 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: Colors.Backgroud,
-        },
-        headerTitleStyle: { color: Colors.Foreground },
-        headerTintColor: Colors.Foreground,
-        contentStyle: { backgroundColor: Colors.Backgroud },
-      }}
-    >
-      <Stack.Screen
-        name="(tabs)"
-        options={{
-          headerShown: false,
+    <UserContextProvider>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: Colors.Backgroud,
+          },
+          headerTitleStyle: { color: Colors.Foreground },
+          headerTintColor: Colors.Foreground,
           contentStyle: { backgroundColor: Colors.Backgroud },
         }}
-      />
-      <Stack.Screen name="auth/signUp" />
-      <Stack.Screen
-        name="group/details/[groupId]"
-        options={{
-          presentation: 'modal',
-        }}
-      />
-      <Stack.Screen
-        name="group/settings/[groupId]"
-        options={{ presentation: 'modal', title: 'Configurações do grupo' }}
-      />
-      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-    </Stack>
+      >
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+            contentStyle: { backgroundColor: Colors.Backgroud },
+          }}
+        />
+        <Stack.Screen name="auth/signUp" />
+        <Stack.Screen
+          name="group/details/[groupId]"
+          options={{
+            presentation: 'modal',
+          }}
+        />
+        <Stack.Screen
+          name="group/settings/[groupId]"
+          options={{ presentation: 'modal', title: 'Configurações do grupo' }}
+        />
+        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+      </Stack>
+    </UserContextProvider>
   );
 }

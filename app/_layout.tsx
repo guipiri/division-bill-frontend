@@ -1,5 +1,5 @@
 import { Colors } from '@/constants/colors';
-import { UserContextProvider } from '@/contexts/UserContext';
+import { AuthContextProvider } from '@/contexts/AuthContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -46,7 +46,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <UserContextProvider>
+    <AuthContextProvider>
       <Stack
         screenOptions={{
           headerStyle: {
@@ -64,7 +64,8 @@ function RootLayoutNav() {
             contentStyle: { backgroundColor: Colors.Backgroud },
           }}
         />
-        <Stack.Screen name="auth/signUp" />
+        <Stack.Screen name="auth/signUp" options={{ title: 'Criar conta' }} />
+        <Stack.Screen name="auth/signIn" options={{ title: 'Division Bill' }} />
         <Stack.Screen
           name="group/details/[groupId]"
           options={{
@@ -77,6 +78,6 @@ function RootLayoutNav() {
         />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
-    </UserContextProvider>
+    </AuthContextProvider>
   );
 }

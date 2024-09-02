@@ -1,0 +1,51 @@
+import { SignWithCredentials } from '@/app/auth/types';
+import { Colors } from '@/constants/colors';
+import React, { useState } from 'react';
+import { StyleSheet, TextInput } from 'react-native';
+import CredentialsButton from './CredentialsButton';
+
+interface CredentialsFormProps {
+  type: 'signin' | 'signup';
+}
+export default function CredendialsForm({ type }: CredentialsFormProps) {
+  const [signData, setSignData] = useState<SignWithCredentials>({
+    email: '',
+    password: '',
+  });
+  return (
+    <>
+      <TextInput
+        onChange={(e) =>
+          setSignData({ ...signData, email: e.nativeEvent.text })
+        }
+        value={signData.email}
+        keyboardType="email-address"
+        autoComplete="email"
+        style={styles.input}
+        placeholder="E-mail..."
+      />
+      <TextInput
+        onChange={(e) =>
+          setSignData({ ...signData, password: e.nativeEvent.text })
+        }
+        value={signData.password}
+        inputMode="text"
+        secureTextEntry={true}
+        style={styles.input}
+        placeholder="Senha..."
+      />
+      <CredentialsButton signData={signData} type={type} />
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  input: {
+    color: Colors.Backgroud,
+    marginTop: 10,
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: Colors.Foreground,
+    borderRadius: 10,
+  },
+});

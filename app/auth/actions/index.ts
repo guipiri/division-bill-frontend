@@ -1,39 +1,65 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { Router } from 'expo-router';
 
-import { createUserWithCredentials, signInWithGoogle } from '@/api';
-import { SignUpWithCredentials } from '../types';
+import {
+  createUserWithCredentials,
+  setAuthorizationHeader,
+  signInWithCredentials,
+  signInWithGoogle,
+} from '@/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Router } from 'expo-router';
+import { Alert } from 'react-native';
+import { SignWithCredentials } from '../types';
 
 GoogleSignin.configure({
   webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
+  iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
 });
 
-export const _signUpWithEmailAndPassword = async (
-  { email, password }: SignUpWithCredentials,
+export const _signUpWithCredentials = async (
+  { email, password }: SignWithCredentials,
   router?: Router,
 ) => {
   try {
-    const res = await createUserWithCredentials({ email, password });
-    console.log(res);
-
-    // Alert.alert(success ? 'Sucesso' : 'Falha', message);
-    // if (success) router?.replace('/auth/signIn');
+    const { success, message } = await createUserWithCredentials({
+      email,
+      password,
+    });
+    Alert.alert(success ? 'Sucesso' : 'Falha', message);
+    router?.replace('/auth/signIn');
   } catch (error) {
     console.log(error);
   }
 };
 
-export const _signInWithEmailAndPassword = async (
-  { email, password }: SignUpWithCredentials,
-  router?: Router,
-) => {};
+export const _signInWithCredentials = async (
+  signInData: SignWithCredentials,
+  setToken: React.Dispatch<React.SetStateAction<string | null>>,
+  router: Router,
+) => {
+  try {
+    const {
+      data: { token },
+    } = await signInWithCredentials(signInData);
+    AsyncStorage.setItem('TOKEN', token);
+    setAuthorizationHeader(token);
+    setToken(token);
+  } catch (error: any) {
+    Alert.alert('Erro', `${error.response.data.message}`);
+  }
+};
 
-export const _signInWithGoogle = async (router?: Router) => {
+export const _signInWithGoogle = async (
+  setToken: React.Dispatch<React.SetStateAction<string | null>>,
+  router: Router,
+) => {
   try {
     await GoogleSignin.hasPlayServices();
-    const { idToken } = await GoogleSignin.signIn();
-    const res = await signInWithGoogle(idToken as string);
-    console.log(res);
+    const { idToken, user } = await GoogleSignin.signIn();
+    const res = await signInWithGoogle(idToken as string, user);
+    //Save jwt token on async storage an setToken state
+    AsyncStorage.setItem('TOKEN', res.data?.token || '');
+    setToken(res.data?.token || null);
   } catch (error) {
     console.log(error);
   }

@@ -1,7 +1,9 @@
 import { Colors } from '@/constants/colors';
+import { AuthContext } from '@/contexts/AuthContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Redirect, Tabs } from 'expo-router';
+import React, { useContext } from 'react';
+import { Text } from 'react-native';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -12,6 +14,9 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+  const { user, isLoading } = useContext(AuthContext);
+  if (isLoading) return <Text>Is loading...</Text>;
+  if (!user) return <Redirect href={'/auth/signIn'} />;
   return (
     <Tabs
       screenOptions={{

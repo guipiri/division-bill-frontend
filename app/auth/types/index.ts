@@ -3,21 +3,13 @@ interface SignUp {
   name: string | null;
   password: string;
   google_id: string;
+  photo: string | null;
 }
 
 export interface SignUpWithGoogle extends Omit<SignUp, 'password'> {}
-export interface SignUpWithCredentials
-  extends Omit<SignUp, 'google_id' | 'name'> {}
 
-export interface User {
-  id: string;
-  email: string;
-  name: string | null;
-  google_id?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  password?: string;
-}
+export interface SignWithCredentials
+  extends Omit<SignUp, 'google_id' | 'name' | 'photo'> {}
 
 export interface AuthResponse {
   token: string;

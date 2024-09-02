@@ -8,6 +8,8 @@ export const AUTH = API_ENDPOINT + '/auth';
 
 export const AUTH_WITH_GOOGLE = AUTH + '/google';
 
+export const AUTH_WITH_CREDENTIALS = AUTH + '/credentials';
+
 export const EXPENSES_ENDPOINT = API_ENDPOINT + '/expenses';
 
 export const GROUPS_ENDPOINT = API_ENDPOINT + '/groups';

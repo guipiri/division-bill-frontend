@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 import CredentialsButton from './CredentialsButton';
 
-interface CredentialsFormProps {
+export default function CredendialsForm({
+  type,
+}: {
   type: 'signin' | 'signup';
-}
-export default function CredendialsForm({ type }: CredentialsFormProps) {
+}) {
   const [signData, setSignData] = useState<SignWithCredentials>({
     email: '',
     password: '',

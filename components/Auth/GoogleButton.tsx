@@ -2,12 +2,11 @@ import { _signInWithGoogle } from '@/app/auth/actions';
 import GoogleIcon from '@/assets/images/googleIcon.png';
 import { Colors } from '@/constants/colors';
 import { AuthContext } from '@/contexts/AuthContext';
-import { router } from 'expo-router';
 import React, { useContext } from 'react';
 import { Image, Pressable, Text } from 'react-native';
 
 export default function GoogleButton() {
-  const { setToken } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
   return (
     <>
       <Text
@@ -21,7 +20,7 @@ export default function GoogleButton() {
       </Text>
       <Pressable
         onPress={async () => {
-          _signInWithGoogle(setToken, router);
+          _signInWithGoogle(signIn);
         }}
         style={{
           backgroundColor: Colors.Foreground,

@@ -1,4 +1,8 @@
-import { getUserById, setAuthorizationHeader } from '@/api';
+import {
+  getUserById,
+  removeAuthorizationHeader,
+  setAuthorizationHeader,
+} from '@/api';
 import { User } from '@/types/User';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
@@ -13,27 +17,31 @@ import {
 
 export const AuthContext = createContext<{
   user: User | null;
-  token: string | null;
-  setToken: React.Dispatch<React.SetStateAction<string | null>>;
+  signIn: (token?: string) => Promise<void>;
+  signOut: () => void;
   isLoading: boolean;
-}>({ user: null, token: null, setToken: () => {}, isLoading: true });
+}>({ user: null, signIn: async () => {}, signOut: () => {}, isLoading: true });
 
 export function AuthContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const getTokenFromStorage = async () => {
-    return await AsyncStorage.getItem('TOKEN');
-  };
-
-  const getUser = useCallback(async () => {
+  const signIn = useCallback(async (token?: string) => {
     setIsLoading(true);
-    const jwtToken = await getTokenFromStorage();
-    if (!jwtToken) return setIsLoading(false);
 
-    setAuthorizationHeader(jwtToken);
+    let jwtToken = null;
+    if (token) {
+      await AsyncStorage.setItem('TOKEN', token);
+      jwtToken = token;
+    }
+
+    if (!jwtToken) {
+      jwtToken = await AsyncStorage.getItem('TOKEN');
+      if (!jwtToken) return setIsLoading(false);
+    }
+
     const { sub } = jwtDecode(jwtToken);
+    setAuthorizationHeader(jwtToken);
     const user = await getUserById(sub as string);
 
     if (user) {
@@ -43,12 +51,21 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
+  const signOut = useCallback(() => {
+    setIsLoading(true);
+    AsyncStorage.removeItem('TOKEN');
+    removeAuthorizationHeader();
+    setUser(null);
+    router.replace('/auth/signIn');
+    setIsLoading(false);
+  }, []);
+
   useEffect(() => {
-    getUser();
-  }, [getUser, token]);
+    signIn();
+  }, [signIn]);
 
   return (
-    <AuthContext.Provider value={{ user, token, setToken, isLoading }}>
+    <AuthContext.Provider value={{ user, signIn, signOut, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

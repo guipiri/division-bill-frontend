@@ -18,13 +18,13 @@ export default function CredentialsButton({
   type,
   signData,
 }: CredentialsButtonProps) {
-  const { setToken } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
   return (
     <Pressable
       onPress={() =>
         type === 'signup'
           ? _signUpWithCredentials(signData, router)
-          : _signInWithCredentials(signData, setToken, router)
+          : _signInWithCredentials(signData, signIn)
       }
       style={{
         backgroundColor: Colors.Green,

@@ -1,7 +1,16 @@
-import { StyleSheet, View } from 'react-native';
+import { AuthContext } from '@/contexts/AuthContext';
+import { useContext } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function TabTwoScreen() {
-  return <View style={styles.container}></View>;
+  const { signOut } = useContext(AuthContext);
+  return (
+    <View style={styles.container}>
+      <Pressable onPress={signOut}>
+        <Text>Fazer logout</Text>
+      </Pressable>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

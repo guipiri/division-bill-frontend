@@ -2,11 +2,7 @@ import { Colors } from '@/constants/colors';
 import React, { ReactNode } from 'react';
 import { Text } from 'react-native';
 
-interface AuthTitleProps {
-  children: ReactNode;
-}
-
-export default function AuthTitle({ children }: AuthTitleProps) {
+export default function AuthTitle({ children }: { children: ReactNode }) {
   return (
     <Text
       style={{

@@ -83,7 +83,8 @@ export const getUserById = async (id: string) => {
   try {
     const { data } = await axios.get<User>(`${USERS_ENDPOINT}/${id}`);
     return data;
-  } catch {
+  } catch (err) {
+    console.log(err);
     return null;
   }
 };
@@ -99,4 +100,8 @@ export const getJwtToken = async (idToken: string) => {
 
 export const setAuthorizationHeader = (token: string) => {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+};
+
+export const removeAuthorizationHeader = () => {
+  axios.defaults.headers.common['Authorization'] = '';
 };

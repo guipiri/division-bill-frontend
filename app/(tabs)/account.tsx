@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/colors';
 import { AuthContext } from '@/contexts/AuthContext';
 import { useContext } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -7,7 +8,7 @@ export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
       <Pressable onPress={signOut}>
-        <Text>Fazer logout</Text>
+        <Text style={{ color: Colors.Foreground }}>Fazer logout</Text>
       </Pressable>
     </View>
   );
@@ -16,7 +17,8 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.Backgroud,
   },
 });

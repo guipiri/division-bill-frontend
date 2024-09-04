@@ -67,6 +67,18 @@ function RootLayoutNav() {
         <Stack.Screen name="auth/signUp" options={{ title: 'Criar conta' }} />
         <Stack.Screen name="auth/signIn" options={{ title: 'Division Bill' }} />
         <Stack.Screen
+          name="group/create/index"
+          options={{
+            title: 'Criar Grupo',
+            headerStyle: {
+              backgroundColor: Colors.CurrentLine,
+            },
+            headerTitleStyle: { color: Colors.Foreground },
+            headerTintColor: Colors.Foreground,
+            contentStyle: { backgroundColor: Colors.Backgroud },
+          }}
+        />
+        <Stack.Screen
           name="group/details/[groupId]"
           options={{
             presentation: 'modal',

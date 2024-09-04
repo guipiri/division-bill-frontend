@@ -7,6 +7,7 @@ import {
   AUTH_WITH_CREDENTIALS,
   AUTH_WITH_GOOGLE,
   CREATE_USER_WITH_GOOGLE,
+  GROUPS_ENDPOINT,
   USERS_ENDPOINT,
 } from '@/constants/endpoints';
 import { Response } from '@/types';
@@ -50,12 +51,11 @@ export const signInWithGoogle = async (
   { email, id: google_id, name, photo }: UserFromGoogle,
 ) => {
   try {
-    // Get the backend JWT token
-    const token = await getJwtToken(idToken);
-
     // Create or update user with this email in database
     await upsertUserWithGoogle({ email, google_id, name, photo });
 
+    // Get the backend JWT token
+    const token = await getJwtToken(idToken);
     // Set jwt token in Authorization header
     setAuthorizationHeader(token);
 
@@ -104,4 +104,8 @@ export const setAuthorizationHeader = (token: string) => {
 
 export const removeAuthorizationHeader = () => {
   axios.defaults.headers.common['Authorization'] = '';
+};
+
+export const createGroup = async (name: string) => {
+  return await axios.post<Response>(GROUPS_ENDPOINT, { name });
 };

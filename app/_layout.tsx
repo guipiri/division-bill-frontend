@@ -44,22 +44,23 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+const options = {
+  headerStyle: {
+    backgroundColor: Colors.CurrentLine,
+  },
+  headerTitleStyle: { color: Colors.Foreground },
+  headerTintColor: Colors.Foreground,
+  contentStyle: { backgroundColor: Colors.Backgroud },
+};
+
 function RootLayoutNav() {
   return (
     <AuthContextProvider>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: Colors.Backgroud,
-          },
-          headerTitleStyle: { color: Colors.Foreground },
-          headerTintColor: Colors.Foreground,
-          contentStyle: { backgroundColor: Colors.Backgroud },
-        }}
-      >
+      <Stack screenOptions={options}>
         <Stack.Screen
           name="(tabs)"
           options={{
+            ...options,
             headerShown: false,
             contentStyle: { backgroundColor: Colors.Backgroud },
           }}
@@ -68,25 +69,19 @@ function RootLayoutNav() {
         <Stack.Screen name="auth/signIn" options={{ title: 'Division Bill' }} />
         <Stack.Screen
           name="group/create/index"
-          options={{
-            title: 'Criar Grupo',
-            headerStyle: {
-              backgroundColor: Colors.CurrentLine,
-            },
-            headerTitleStyle: { color: Colors.Foreground },
-            headerTintColor: Colors.Foreground,
-            contentStyle: { backgroundColor: Colors.Backgroud },
-          }}
+          options={{ ...options, title: 'Criar Grupo' }}
         />
         <Stack.Screen
-          name="group/details/[groupId]"
-          options={{
-            presentation: 'modal',
-          }}
+          name="group/expenses/[groupId]"
+          options={{ ...options, presentation: 'modal' }}
         />
         <Stack.Screen
           name="group/settings/[groupId]"
-          options={{ presentation: 'modal', title: 'Configurações do grupo' }}
+          options={{
+            presentation: 'modal',
+            title: 'Configurações do grupo',
+            ...options,
+          }}
         />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>

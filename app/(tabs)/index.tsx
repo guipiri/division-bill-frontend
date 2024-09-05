@@ -3,7 +3,7 @@ import { Colors } from '@/constants/colors';
 import { AuthContext } from '@/contexts/AuthContext';
 import { Group } from '@/types/Group';
 import { FontAwesome } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import {
   Image,
@@ -27,47 +27,62 @@ export default function ListGroupsScreen() {
   return (
     <View style={styles.container}>
       <ScrollView style={{ width: '100%', padding: 20 }}>
-        {groups.map((group) => {
+        {groups.map((group, index) => {
           return (
             <View
               key={group.id}
               style={{
-                backgroundColor: Colors.CurrentLine,
-                marginBottom: 20,
+                backgroundColor: 'transparent',
+                marginBottom: index + 1 === groups.length ? 40 : 10,
                 borderRadius: 5,
               }}
             >
-              <Pressable>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    height: 140,
-                    alignItems: 'center',
-                  }}
-                >
+              <Link href={`/group/expenses/${group.id}`} asChild>
+                <Pressable>
                   <View
                     style={{
-                      width: 130,
-                      height: '100%',
-                      marginRight: 20,
+                      flexDirection: 'row',
+                      height: 140,
+                      alignItems: 'center',
                     }}
                   >
-                    <Image
-                      source={divisionBillImage}
-                      style={{ width: 130, height: '100%', borderRadius: 5 }}
-                    />
+                    <View
+                      style={{
+                        width: 130,
+                        height: '100%',
+                        marginRight: 20,
+                      }}
+                    >
+                      <Image
+                        source={divisionBillImage}
+                        style={{ width: 130, height: '100%', borderRadius: 5 }}
+                      />
+                    </View>
+                    <View>
+                      <Text
+                        style={{
+                          color: Colors.Foreground,
+                          fontSize: 20,
+                          width: 200,
+                        }}
+                      >
+                        {group.name}
+                      </Text>
+                      <Text
+                        style={{
+                          color: Colors.Foreground,
+                          width: 200,
+                          marginTop: 10,
+                        }}
+                      >
+                        {group.status === 'CLOSED'
+                          ? 'dívidas quitadas!'
+                          : 'aqui ainda há dívidas!'}
+                      </Text>
+                    </View>
                   </View>
-                  <Text
-                    style={{
-                      color: Colors.Foreground,
-                      fontSize: 20,
-                      width: 200,
-                    }}
-                  >
-                    {group.name}
-                  </Text>
-                </View>
-              </Pressable>
+                </Pressable>
+              </Link>
             </View>
           );
         })}

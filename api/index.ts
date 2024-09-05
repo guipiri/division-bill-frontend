@@ -7,10 +7,12 @@ import {
   AUTH_WITH_CREDENTIALS,
   AUTH_WITH_GOOGLE,
   CREATE_USER_WITH_GOOGLE,
+  EXPENSES_ENDPOINT,
   GROUPS_ENDPOINT,
   USERS_ENDPOINT,
 } from '@/constants/endpoints';
 import { Response } from '@/types';
+import { Expense } from '@/types/Expense';
 import { Group } from '@/types/Group';
 import { User, UserFromGoogle } from '@/types/User';
 import axios from 'axios';
@@ -113,6 +115,12 @@ export const createGroup = async (name: string) => {
 export const getGroupsByUserId = async (userId: string) => {
   const { data } = await axios.get<Group[]>(
     GROUPS_ENDPOINT + `?userId=${userId}`,
+  );
+  return data;
+};
+export const getExpensesByGroupId = async (groupId: string) => {
+  const { data } = await axios.get<Expense[]>(
+    EXPENSES_ENDPOINT + `?groupId=${groupId}`,
   );
   return data;
 };

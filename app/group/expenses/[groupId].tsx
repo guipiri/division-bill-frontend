@@ -4,7 +4,7 @@ import { Link, Stack, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-export default function GroupDetailsScreen() {
+export default function ExpensesScreen() {
   const { groupId } = useLocalSearchParams();
 
   return (

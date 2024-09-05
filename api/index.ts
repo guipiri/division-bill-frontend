@@ -11,6 +11,7 @@ import {
   USERS_ENDPOINT,
 } from '@/constants/endpoints';
 import { Response } from '@/types';
+import { Group } from '@/types/Group';
 import { User, UserFromGoogle } from '@/types/User';
 import axios from 'axios';
 
@@ -83,8 +84,7 @@ export const getUserById = async (id: string) => {
   try {
     const { data } = await axios.get<User>(`${USERS_ENDPOINT}/${id}`);
     return data;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return null;
   }
 };
@@ -108,4 +108,11 @@ export const removeAuthorizationHeader = () => {
 
 export const createGroup = async (name: string) => {
   return await axios.post<Response>(GROUPS_ENDPOINT, { name });
+};
+
+export const getGroupsByUserId = async (userId: string) => {
+  const { data } = await axios.get<Group[]>(
+    GROUPS_ENDPOINT + `?userId=${userId}`,
+  );
+  return data;
 };

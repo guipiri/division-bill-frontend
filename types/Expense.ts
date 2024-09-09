@@ -7,7 +7,7 @@ export interface Expense {
 
   members: User[];
 
-  created_at: Date;
+  createdAt: Date;
 
-  updated_at: Date;
+  updatedAt: Date;
 }

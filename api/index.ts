@@ -51,11 +51,12 @@ export const signInWithCredentials = async (
 
 export const signInWithGoogle = async (
   idToken: string,
-  { email, id: google_id, name, photo }: UserFromGoogle,
+  { email, id: googleId, name, photo }: UserFromGoogle,
 ) => {
   try {
     // Create or update user with this email in database
-    await upsertUserWithGoogle({ email, google_id, name, photo });
+    const res = await upsertUserWithGoogle({ email, googleId, name, photo });
+    console.log(res);
 
     // Get the backend JWT token
     const token = await getJwtToken(idToken);
@@ -118,6 +119,7 @@ export const getGroupsByUserId = async (userId: string) => {
   );
   return data;
 };
+
 export const getExpensesByGroupId = async (groupId: string) => {
   const { data } = await axios.get<Expense[]>(
     EXPENSES_ENDPOINT + `?groupId=${groupId}`,

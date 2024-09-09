@@ -14,7 +14,7 @@ export interface Group {
 
   status: StatusList;
 
-  created_at: Date;
+  createdAt: Date;
 
-  updated_at: Date;
+  updatedAt: Date;
 }

@@ -52,7 +52,10 @@ export const _signInWithGoogle = async (
     const { idToken, user } = await GoogleSignin.signIn();
     const res = await signInWithGoogle(idToken as string, user);
     await signIn(res.data?.token);
+    console.log(res);
   } catch (error: any) {
-    Alert.alert('Erro', `${error.response.data.message}`);
+    console.log(error);
+
+    // Alert.alert('Erro', `${error.response.data.message}`);
   }
 };

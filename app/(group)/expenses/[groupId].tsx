@@ -11,7 +11,6 @@ export default function ExpensesScreen() {
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: 'Nome do grupo aqui',
           headerRight: () => (
             <Link href={`/group/settings/${groupId}`} asChild>
               <Pressable>

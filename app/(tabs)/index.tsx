@@ -37,7 +37,7 @@ export default function ListGroupsScreen() {
                 borderRadius: 5,
               }}
             >
-              <Link href={`/group/expenses/${group.id}`} asChild>
+              <Link href={`/(group)/expenses/${group.id}`} asChild>
                 <Pressable>
                   <View
                     style={{

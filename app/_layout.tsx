@@ -68,6 +68,16 @@ function RootLayoutNav() {
         <Stack.Screen name="auth/signUp" options={{ title: 'Criar conta' }} />
         <Stack.Screen name="auth/signIn" options={{ title: 'Division Bill' }} />
         <Stack.Screen
+          name="(group)"
+          options={{
+            ...options,
+            headerShown: false,
+            presentation: 'modal',
+            title: 'GrupoX',
+            contentStyle: { backgroundColor: Colors.Backgroud },
+          }}
+        />
+        {/* <Stack.Screen
           name="group/create/index"
           options={{ ...options, title: 'Criar Grupo' }}
         />
@@ -82,7 +92,7 @@ function RootLayoutNav() {
             title: 'Configurações do grupo',
             ...options,
           }}
-        />
+        /> */}
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
     </AuthContextProvider>

@@ -1,9 +1,9 @@
 import { _getGroupsByUserId } from '@/src/actions';
 import divisionBillImage from '@/src/assets/images/pink-floyd-the-division-bell.jpg';
+import { MainActionButton } from '@/src/components/MainActionButton';
 import { Colors } from '@/src/constants/colors';
 import { AuthContext } from '@/src/contexts/AuthContext';
 import { Group } from '@/src/types/Group';
-import { FontAwesome } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import {
@@ -87,17 +87,13 @@ export default function ListGroupsScreen() {
           );
         })}
       </ScrollView>
-      <Pressable
-        style={{
-          alignSelf: 'flex-end',
-          bottom: 36,
-          right: 36,
-          position: 'absolute',
+      <MainActionButton.Root
+        action={() => {
+          router.push('/group/create-group');
         }}
-        onPress={() => router.push('/group/create-group')}
       >
-        <FontAwesome name="plus-circle" size={56} color={Colors.Green} />
-      </Pressable>
+        <MainActionButton.Icon />
+      </MainActionButton.Root>
     </View>
   );
 }

@@ -6,6 +6,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import CurrentGroupContextProvider from '../contexts/CurrentGroup';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -56,24 +57,36 @@ const options = {
 function RootLayoutNav() {
   return (
     <AuthContextProvider>
-      <Stack screenOptions={options}>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            ...options,
-            headerShown: false,
-            contentStyle: { backgroundColor: Colors.Backgroud },
-          }}
-        />
-        <Stack.Screen name="auth/signUp" options={{ title: 'Criar conta' }} />
-        <Stack.Screen name="auth/signIn" options={{ title: 'Division Bill' }} />
-        {/* <Stack.Screen name="group/[...groupId]" />a */}
-        <Stack.Screen
-          name="group/create-group"
-          options={{ title: 'Criar grupo' }}
-        />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
+      <CurrentGroupContextProvider>
+        <Stack screenOptions={options}>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              ...options,
+              headerShown: false,
+              contentStyle: { backgroundColor: Colors.Backgroud },
+            }}
+          />
+          <Stack.Screen name="auth/signUp" options={{ title: 'Criar conta' }} />
+          <Stack.Screen
+            name="auth/signIn"
+            options={{ title: 'Division Bill' }}
+          />
+          <Stack.Screen name="group/expenses/[groupId]" />
+          <Stack.Screen
+            name="group/create-group"
+            options={{ title: 'Criar grupo' }}
+          />
+          <Stack.Screen
+            name="group/expenses/create-expense"
+            options={{ title: 'Criar despesa' }}
+          />
+          <Stack.Screen
+            name="group/settings"
+            options={{ title: 'Configurações' }}
+          />
+        </Stack>
+      </CurrentGroupContextProvider>
     </AuthContextProvider>
   );
 }

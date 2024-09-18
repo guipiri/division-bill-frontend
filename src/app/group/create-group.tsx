@@ -1,9 +1,9 @@
 import { _createGroup } from '@/src/actions';
+import { MainActionButton } from '@/src/components/MainActionButton';
 import { Colors } from '@/src/constants/colors';
-import { FontAwesome } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default function CreateGroupScreen() {
   const [groupName, setGroupName] = useState<string | null>(null);
@@ -29,12 +29,9 @@ export default function CreateGroupScreen() {
           }}
         />
       </View>
-      <Pressable
-        style={{ alignSelf: 'flex-end', marginBottom: 36, marginRight: 36 }}
-        onPress={() => _createGroup(groupName, router)}
-      >
-        <FontAwesome name="check-circle" size={56} color={Colors.Green} />
-      </Pressable>
+      <MainActionButton.Root action={() => _createGroup(groupName, router)}>
+        <MainActionButton.Icon name="check-circle" />
+      </MainActionButton.Root>
     </View>
   );
 }

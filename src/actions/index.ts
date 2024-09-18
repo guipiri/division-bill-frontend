@@ -41,9 +41,20 @@ export const _getGroupsByUserId = async (
 ) => {
   try {
     const groups = await getGroupsByUserId(userId);
-    console.log(groups);
-
     setGroups(groups);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const _createExpense = async (name: string | null, router: Router) => {
+  if (!name) {
+    return Alert.alert('Erro', 'O nome da despesa não pode ser vazio!');
+  }
+  try {
+    await createGroup(name);
+    Alert.alert('Despesa criada!', '💸');
+    router.replace('/');
   } catch (error) {
     console.log(error);
   }
@@ -92,7 +103,6 @@ export const _signInWithGoogle = async (
     const { idToken, user } = await GoogleSignin.signIn();
     const res = await signInWithGoogle(idToken as string, user);
     await signIn(res.data?.token);
-    console.log(res);
   } catch (error: any) {
     console.log(error);
 

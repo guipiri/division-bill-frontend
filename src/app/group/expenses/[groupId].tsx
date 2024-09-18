@@ -1,13 +1,13 @@
-import { getGroupDetailsByGroupId } from '@/src/api';
+import { MainActionButton } from '@/src/components/MainActionButton';
 import { Colors } from '@/src/constants/colors';
-import { Group } from '@/src/types/Group';
+import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
 import { FontAwesome } from '@expo/vector-icons';
-import { Link, Stack, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Link, router, Stack, useLocalSearchParams } from 'expo-router';
+import React, { useContext, useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 const headerRight = (groupId: string) => (
-  <Link href={`/group/settings/${groupId}`} asChild>
+  <Link href={`/group/settings`} asChild>
     <Pressable>
       {({ pressed }) => (
         <FontAwesome
@@ -22,27 +22,22 @@ const headerRight = (groupId: string) => (
 );
 
 export default function ExpensesScreen() {
-  const [group, setGroup] = useState<Group | null>(null);
   const { groupId } = useLocalSearchParams();
-
-  const getGroup = useCallback(async (groupId: string) => {
-    const group = await getGroupDetailsByGroupId(groupId as string);
-    setGroup(group);
-  }, []);
+  const { currentGroup, setCurrentGroupId } = useContext(CurrentGroupContext);
 
   useEffect(() => {
-    if (groupId) getGroup(groupId as string);
-  }, [getGroup, groupId]);
+    if (groupId) setCurrentGroupId(groupId as string);
+  }, [groupId, setCurrentGroupId]);
 
   return (
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: `${group?.name}`,
+          title: `${currentGroup?.name}`,
           headerRight: () => headerRight(groupId as string),
         }}
       />
-      {group?.expenses.map((expense) => {
+      {currentGroup?.expenses.map((expense) => {
         return (
           <View
             key={expense.id}
@@ -97,6 +92,13 @@ export default function ExpensesScreen() {
           </View>
         );
       })}
+      <MainActionButton.Root
+        action={() => {
+          router.push('/group/expenses/create-expense');
+        }}
+      >
+        <MainActionButton.Icon />
+      </MainActionButton.Root>
     </View>
   );
 }

@@ -9,9 +9,16 @@ export interface Expense {
 
   payingMemberId: string;
 
+  groupId: string;
+
   division: Division[];
 
   createdAt: Date;
 
   updatedAt: Date;
+}
+
+export interface CreateExpenseDto
+  extends Omit<Expense, 'createdAt' | 'updatedAt' | 'id' | 'division'> {
+  division: Pick<Division, 'amountBorrowed' | 'userId'>[];
 }

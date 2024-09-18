@@ -1,12 +1,13 @@
 import { Colors } from '@/src/constants/colors';
-import { AuthContextProvider } from '@/src/contexts/AuthContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import CurrentGroupContextProvider from '../contexts/CurrentGroup';
+import { AuthProvider } from '../contexts/Auth';
+import CurrentGroupProvider from '../contexts/CurrentGroup';
+import NewExpenseProvider from '../contexts/NewExpense';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -56,37 +57,46 @@ const options = {
 
 function RootLayoutNav() {
   return (
-    <AuthContextProvider>
-      <CurrentGroupContextProvider>
-        <Stack screenOptions={options}>
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              ...options,
-              headerShown: false,
-              contentStyle: { backgroundColor: Colors.Backgroud },
-            }}
-          />
-          <Stack.Screen name="auth/signUp" options={{ title: 'Criar conta' }} />
-          <Stack.Screen
-            name="auth/signIn"
-            options={{ title: 'Division Bill' }}
-          />
-          <Stack.Screen name="group/expenses/[groupId]" />
-          <Stack.Screen
-            name="group/create-group"
-            options={{ title: 'Criar grupo' }}
-          />
-          <Stack.Screen
-            name="group/expenses/create-expense"
-            options={{ title: 'Criar despesa' }}
-          />
-          <Stack.Screen
-            name="group/settings"
-            options={{ title: 'Configurações' }}
-          />
-        </Stack>
-      </CurrentGroupContextProvider>
-    </AuthContextProvider>
+    <AuthProvider>
+      <CurrentGroupProvider>
+        <NewExpenseProvider>
+          <Stack screenOptions={options}>
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                ...options,
+                headerShown: false,
+                contentStyle: { backgroundColor: Colors.Backgroud },
+              }}
+            />
+            <Stack.Screen
+              name="auth/signUp"
+              options={{ title: 'Criar conta' }}
+            />
+            <Stack.Screen
+              name="auth/signIn"
+              options={{ title: 'Division Bill' }}
+            />
+            <Stack.Screen name="group/expenses/[groupId]" />
+            <Stack.Screen
+              name="group/create-group"
+              options={{ title: 'Criar grupo' }}
+            />
+            <Stack.Screen
+              name="group/expenses/create-expense"
+              options={{ title: 'Criar despesa' }}
+            />
+            <Stack.Screen
+              name="group/expenses/who-paid"
+              options={{ title: 'Quem pagou?' }}
+            />
+            <Stack.Screen
+              name="group/settings"
+              options={{ title: 'Configurações' }}
+            />
+          </Stack>
+        </NewExpenseProvider>
+      </CurrentGroupProvider>
+    </AuthProvider>
   );
 }

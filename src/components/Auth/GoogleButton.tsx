@@ -1,7 +1,7 @@
 import { _signInWithGoogle } from '@/src/actions';
 import GoogleIcon from '@/src/assets/images/googleIcon.png';
 import { Colors } from '@/src/constants/colors';
-import { AuthContext } from '@/src/contexts/AuthContext';
+import { AuthContext } from '@/src/contexts/Auth';
 import React, { useContext } from 'react';
 import { Image, Pressable, Text } from 'react-native';
 

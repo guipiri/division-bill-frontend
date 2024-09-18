@@ -1,24 +1,22 @@
-import { _createExpense } from '@/src/actions';
 import { InputTextComponent } from '@/src/components/InputText';
-import { MainActionButton } from '@/src/components/MainActionButton';
 import { Colors } from '@/src/constants/colors';
 import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
+import { NewExpenseContext } from '@/src/contexts/NewExpense';
 import { router } from 'expo-router';
-import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import React, { useContext } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function CreateExpenseScreen() {
-  const [expenseName, setExpenseName] = useState<string | null>(null);
+  const { newExpense, setNewExpense } = useContext(NewExpenseContext);
   const { currentGroup } = useContext(CurrentGroupContext);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <InputTextComponent.Root>
         <InputTextComponent.Label title="Nome da despesa" />
         <InputTextComponent.Input
           onChange={(e) => {
-            setExpenseName(e.nativeEvent.text);
+            setNewExpense({ ...newExpense, name: e.nativeEvent.text });
           }}
         />
       </InputTextComponent.Root>
@@ -26,45 +24,82 @@ export default function CreateExpenseScreen() {
         <InputTextComponent.Label title="Valor da despesa" />
         <InputTextComponent.Input
           onChange={(e) => {
-            setExpenseName(e.nativeEvent.text);
+            setNewExpense({
+              ...newExpense,
+              amount: Number(e.nativeEvent.text),
+            });
           }}
         />
       </InputTextComponent.Root>
-      {currentGroup?.members.map((member) => {
-        return (
-          <View
-            key={member.id}
+      <View style={{ alignItems: 'center', marginTop: 20 }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{ color: Colors.Foreground, fontSize: 16 }}>
+            Pago por{' '}
+          </Text>
+          <Pressable
             style={{
-              // backgroundColor: Colors.CurrentLine,
-              flexDirection: 'row',
-              marginHorizontal: 20,
-              // alignItems: 'center',
-              justifyContent: 'space-between',
-              marginVertical: 20,
+              backgroundColor: Colors.CurrentLine,
+              borderRadius: 10,
+              marginVertical: 10,
+            }}
+            onPress={() => router.push('/group/expenses/who-paid')}
+          >
+            <Text
+              style={{
+                fontWeight: 'bold',
+                color: Colors.Foreground,
+                marginHorizontal: 10,
+                fontSize: 16,
+                marginVertical: 5,
+              }}
+            >
+              {
+                currentGroup?.members.filter(
+                  (members) => members.id === newExpense.payingMemberId,
+                )[0].name
+              }
+            </Text>
+          </Pressable>
+          <Text
+            style={{
+              color: Colors.Foreground,
+              fontSize: 16,
             }}
           >
-            <Text style={{ color: Colors.Foreground, fontSize: 18 }}>
-              {member.name}
-            </Text>
-            <BouncyCheckbox
-              size={25}
-              fillColor={Colors.Green}
-              // unFillColor="#FFFFFF"
-              // text="Custom Checkbox"
-              // iconStyle={{ backgroundColor: 'red' }}
-              // innerIconStyle={{ borderWidth: 5, color }}
-              // textStyle={{ fontFamily: 'JosefinSans-Regular' }}
-              onPress={(isChecked: boolean) => {
-                console.log(isChecked);
+            {' '}
+            e dividido{' '}
+          </Text>
+          <Pressable
+            style={{
+              backgroundColor: Colors.CurrentLine,
+              borderRadius: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontWeight: 'bold',
+                color: Colors.Foreground,
+                marginHorizontal: 10,
+                fontSize: 16,
+                marginVertical: 5,
               }}
-            />
-          </View>
-        );
-      })}
-      <MainActionButton.Root action={() => _createExpense(expenseName, router)}>
+            >
+              IGUALMENTE
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+      {/* <MainActionButton.Root action={() => _createExpense(expenseName, router)}>
         <MainActionButton.Icon name="check-circle" />
-      </MainActionButton.Root>
-    </View>
+      </MainActionButton.Root> */}
+    </ScrollView>
   );
 }
 
@@ -73,5 +108,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.Backgroud,
     marginTop: 20,
+    paddingHorizontal: 20,
   },
 });

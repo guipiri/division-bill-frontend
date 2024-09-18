@@ -22,7 +22,7 @@ export const AuthContext = createContext<{
   isLoading: boolean;
 }>({ user: null, signIn: async () => {}, signOut: () => {}, isLoading: true });
 
-export function AuthContextProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 

@@ -2,7 +2,7 @@ import { _getGroupsByUserId } from '@/src/actions';
 import divisionBillImage from '@/src/assets/images/pink-floyd-the-division-bell.jpg';
 import { MainActionButton } from '@/src/components/MainActionButton';
 import { Colors } from '@/src/constants/colors';
-import { AuthContext } from '@/src/contexts/AuthContext';
+import { AuthContext } from '@/src/contexts/Auth';
 import { Group } from '@/src/types/Group';
 import { Link, router } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';

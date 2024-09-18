@@ -1,6 +1,6 @@
 import { _signInWithCredentials, _signUpWithCredentials } from '@/src/actions';
 import { Colors } from '@/src/constants/colors';
-import { AuthContext } from '@/src/contexts/AuthContext';
+import { AuthContext } from '@/src/contexts/Auth';
 import { SignWithCredentials } from '@/src/types';
 import { router } from 'expo-router';
 import React, { useContext } from 'react';

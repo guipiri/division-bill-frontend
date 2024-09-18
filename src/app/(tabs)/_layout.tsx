@@ -1,5 +1,5 @@
 import { Colors } from '@/src/constants/colors';
-import { AuthContext } from '@/src/contexts/AuthContext';
+import { AuthContext } from '@/src/contexts/Auth';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Redirect, Tabs } from 'expo-router';
 import React, { useContext } from 'react';

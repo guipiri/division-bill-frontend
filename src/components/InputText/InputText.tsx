@@ -13,6 +13,7 @@ export default function InputText({
   return (
     <TextInput
       onChange={onChange}
+      keyboardType="numeric"
       style={{
         borderBottomColor: Colors.Green,
         borderBottomWidth: 1,

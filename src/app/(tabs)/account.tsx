@@ -1,5 +1,5 @@
 import { Colors } from '@/src/constants/colors';
-import { AuthContext } from '@/src/contexts/AuthContext';
+import { AuthContext } from '@/src/contexts/Auth';
 import { useContext } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 

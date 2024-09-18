@@ -13,7 +13,7 @@ export const CurrentGroupContext = createContext<{
   setCurrentGroupId: React.Dispatch<React.SetStateAction<string | null>>;
 }>({ currentGroup: null, setCurrentGroupId: () => {} });
 
-export default function CurrentGroupContextProvider({
+export default function CurrentGroupProvider({
   children,
 }: {
   children: ReactNode;

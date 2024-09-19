@@ -3,12 +3,17 @@ import { Colors } from '@/src/constants/colors';
 import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
 import { NewExpenseContext } from '@/src/contexts/NewExpense';
 import { router } from 'expo-router';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function CreateExpenseScreen() {
-  const { newExpense, setNewExpense } = useContext(NewExpenseContext);
+  const { newExpense, setNewExpense, resetExpense } =
+    useContext(NewExpenseContext);
   const { currentGroup } = useContext(CurrentGroupContext);
+
+  useEffect(() => {
+    resetExpense();
+  }, [resetExpense]);
 
   return (
     <ScrollView style={styles.container}>

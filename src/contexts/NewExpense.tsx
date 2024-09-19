@@ -1,6 +1,7 @@
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -20,7 +21,12 @@ const initialState = {
 export const NewExpenseContext = createContext<{
   newExpense: CreateExpenseDto;
   setNewExpense: React.Dispatch<React.SetStateAction<CreateExpenseDto>>;
-}>({ newExpense: initialState, setNewExpense: () => {} });
+  resetExpense: () => void;
+}>({
+  newExpense: initialState,
+  setNewExpense: () => {},
+  resetExpense: () => {},
+});
 
 export default function NewExpenseProvider({
   children,
@@ -31,8 +37,9 @@ export default function NewExpenseProvider({
   const { currentGroup } = useContext(CurrentGroupContext);
   const [newExpense, setNewExpense] = useState<CreateExpenseDto>(initialState);
 
-  useEffect(() => {
-    if (!currentGroup) return;
+  const resetExpense = useCallback(() => {
+    if (!currentGroup || !user) return;
+
     const initialState = {
       amount: 0,
       division: currentGroup?.members.map((member, index, array) => {
@@ -42,14 +49,21 @@ export default function NewExpenseProvider({
         };
       }),
       name: '',
-      payingMemberId: user?.id || '',
-      groupId: currentGroup?.id || '',
+      payingMemberId: user.id || '',
+      groupId: currentGroup.id || '',
     };
+
     setNewExpense(initialState);
-  }, [currentGroup, user, newExpense.amount]);
+  }, [currentGroup, newExpense.amount, user]);
+
+  useEffect(() => {
+    resetExpense();
+  }, [resetExpense]);
 
   return (
-    <NewExpenseContext.Provider value={{ newExpense, setNewExpense }}>
+    <NewExpenseContext.Provider
+      value={{ newExpense, setNewExpense, resetExpense }}
+    >
       {children}
     </NewExpenseContext.Provider>
   );

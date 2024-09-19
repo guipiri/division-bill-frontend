@@ -1,10 +1,18 @@
-import { InputTextComponent } from '@/src/components/InputText';
+import { InputComponent } from '@/src/components/Input';
 import { Colors } from '@/src/constants/colors';
 import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
 import { NewExpenseContext } from '@/src/contexts/NewExpense';
 import { router } from 'expo-router';
 import React, { useContext, useEffect } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 export default function CreateExpenseScreen() {
   const { newExpense, setNewExpense, resetExpense } =
@@ -17,25 +25,37 @@ export default function CreateExpenseScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <InputTextComponent.Root>
-        <InputTextComponent.Label title="Nome da despesa" />
-        <InputTextComponent.Input
+      <InputComponent.Root>
+        <InputComponent.Label title="Nome da despesa" />
+        <InputComponent.Input
           onChange={(e) => {
             setNewExpense({ ...newExpense, name: e.nativeEvent.text });
           }}
         />
-      </InputTextComponent.Root>
-      <InputTextComponent.Root>
-        <InputTextComponent.Label title="Valor da despesa" />
-        <InputTextComponent.Input
+      </InputComponent.Root>
+      <InputComponent.Root>
+        <InputComponent.Label title="Valor da despesa R$" />
+        <InputComponent.Input
           onChange={(e) => {
+            const amount = Number(e.nativeEvent.text.replaceAll(',', '.'));
+
+            if (isNaN(amount))
+              return Alert.alert('Opa!', 'Este campo deve ser um número!');
+
             setNewExpense({
               ...newExpense,
-              amount: Number(e.nativeEvent.text),
+              amount: amount,
+              division: newExpense.division.map((division) => {
+                return {
+                  ...division,
+                  amountBorrowed: amount / newExpense.division.length,
+                };
+              }),
             });
           }}
+          keyboardType="numeric"
         />
-      </InputTextComponent.Root>
+      </InputComponent.Root>
       <View style={{ alignItems: 'center', marginTop: 20 }}>
         <View
           style={{
@@ -101,9 +121,85 @@ export default function CreateExpenseScreen() {
           </Pressable>
         </View>
       </View>
-      {/* <MainActionButton.Root action={() => _createExpense(expenseName, router)}>
-        <MainActionButton.Icon name="check-circle" />
-      </MainActionButton.Root> */}
+
+      <View style={{ marginVertical: 30 }}>
+        {currentGroup?.members.map((member) => {
+          return (
+            <View
+              key={member.id}
+              style={{
+                flexDirection: 'row',
+                marginHorizontal: 40,
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Pressable
+                style={{
+                  width: '100%',
+                  paddingVertical: 20,
+                }}
+                onPress={() => {
+                  setNewExpense({
+                    ...newExpense,
+                    payingMemberId: member.id,
+                  });
+                  router.back();
+                }}
+              >
+                <Text
+                  style={{
+                    color: Colors.Foreground,
+                    fontSize: 16,
+                  }}
+                >
+                  {member.name}
+                </Text>
+              </Pressable>
+              <BouncyCheckbox
+                isChecked={true}
+                fillColor={Colors.Green}
+                // size={50}
+                // useBuiltInState={false}
+                // iconImageStyle={styles.iconImageStyle}
+                // iconStyle={{ borderColor: 'green' }}
+                onPress={(checked: boolean) => {
+                  if (checked) {
+                    setNewExpense({
+                      ...newExpense,
+                      division: [
+                        ...newExpense.division.map((division) => ({
+                          ...division,
+                          amountBorrowed:
+                            newExpense.amount /
+                            (newExpense.division.length + 1),
+                        })),
+                        {
+                          userId: member.id,
+                          amountBorrowed:
+                            newExpense.amount /
+                            (newExpense.division.length + 1),
+                        },
+                      ],
+                    });
+                  } else {
+                    const newDivision = newExpense.division
+                      .filter((division) => division.userId !== member.id)
+                      .map((division, index, array) => ({
+                        ...division,
+                        amountBorrowed: newExpense.amount / array.length,
+                      }));
+                    setNewExpense({
+                      ...newExpense,
+                      division: newDivision,
+                    });
+                  }
+                }}
+              />
+            </View>
+          );
+        })}
+      </View>
     </ScrollView>
   );
 }
@@ -112,7 +208,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.Backgroud,
-    marginTop: 20,
     paddingHorizontal: 20,
   },
 });

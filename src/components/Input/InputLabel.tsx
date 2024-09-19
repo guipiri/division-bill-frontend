@@ -2,7 +2,7 @@ import { Colors } from '@/src/constants/colors';
 import React from 'react';
 import { Text } from 'react-native';
 
-export default function InputTextLabel({ title }: { title: string }) {
+export default function InputLabel({ title }: { title: string }) {
   return (
     <Text
       style={{

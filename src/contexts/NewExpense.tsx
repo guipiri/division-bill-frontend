@@ -34,27 +34,29 @@ export default function NewExpenseProvider({
   children: ReactNode;
 }) {
   const { user } = useContext(AuthContext);
+
   const { currentGroup } = useContext(CurrentGroupContext);
   const [newExpense, setNewExpense] = useState<CreateExpenseDto>(initialState);
+  const [divisionType, setDivisionType] = useState<'equally' | 'unequally'>(
+    'equally',
+  );
+  console.log(newExpense);
 
   const resetExpense = useCallback(() => {
     if (!currentGroup || !user) return;
 
     const initialState = {
-      amount: 0,
-      division: currentGroup?.members.map((member, index, array) => {
-        return {
-          userId: member.id,
-          amountBorrowed: newExpense.amount / array.length,
-        };
-      }),
       name: '',
-      payingMemberId: user.id || '',
-      groupId: currentGroup.id || '',
+      amount: 0,
+      division: currentGroup.members.map((member) => {
+        return { userId: member.id, amountBorrowed: 0 };
+      }),
+      payingMemberId: user.id,
+      groupId: currentGroup.id,
     };
 
     setNewExpense(initialState);
-  }, [currentGroup, newExpense.amount, user]);
+  }, [user, currentGroup]);
 
   useEffect(() => {
     resetExpense();

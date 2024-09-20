@@ -1,6 +1,7 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import {
+  createExpense,
   createGroup,
   createUserWithCredentials,
   getExpensesByGroupId,
@@ -48,14 +49,29 @@ export const _getGroupsByUserId = async (
   }
 };
 
-export const _createExpense = async (name: string | null, router: Router) => {
-  if (!name) {
+export const _createExpense = async (
+  newExpense: CreateExpenseDto,
+  getCurrentGroup: (groupId: string) => Promise<void>,
+  router: Router,
+) => {
+  const { amount, name, expenseDivision } = newExpense;
+  if (!name)
     return Alert.alert('Erro', 'O nome da despesa não pode ser vazio!');
-  }
+
+  if (expenseDivision.length === 0)
+    return Alert.alert(
+      'Erro',
+      'A despesa tem que ser dividida em pelo menos um membro',
+    );
+
+  if (amount === 0)
+    return Alert.alert('Erro', 'Uma despesa muito barata, não?');
+
   try {
-    await createGroup(name);
+    await createExpense(newExpense);
+    await getCurrentGroup(newExpense.groupId);
     Alert.alert('Despesa criada!', '💸');
-    router.replace('/');
+    router.back();
   } catch (error) {
     console.log(error);
   }
@@ -118,14 +134,16 @@ export const _addMemberToEquallyExpense = (
 ) => {
   setNewExpense({
     ...newExpense,
-    division: [
-      ...newExpense.division.map((division) => ({
+    expenseDivision: [
+      ...newExpense.expenseDivision.map((division) => ({
         ...division,
-        amountBorrowed: newExpense.amount / (newExpense.division.length + 1),
+        amountBorrowed:
+          newExpense.amount / (newExpense.expenseDivision.length + 1),
       })),
       {
         userId: member.id,
-        amountBorrowed: newExpense.amount / (newExpense.division.length + 1),
+        amountBorrowed:
+          newExpense.amount / (newExpense.expenseDivision.length + 1),
       },
     ],
   });
@@ -136,7 +154,7 @@ export const _removeMemberFromEquallyExpense = (
   member: Group['members'][0],
   setNewExpense: React.Dispatch<React.SetStateAction<CreateExpenseDto>>,
 ) => {
-  const newDivision = newExpense.division
+  const newDivision = newExpense.expenseDivision
     .filter((division) => division.userId !== member.id)
     .map((division, index, array) => ({
       ...division,
@@ -144,7 +162,7 @@ export const _removeMemberFromEquallyExpense = (
     }));
   setNewExpense({
     ...newExpense,
-    division: newDivision,
+    expenseDivision: newDivision,
   });
 };
 
@@ -161,11 +179,19 @@ export const _handleNewAmountsInEquallyExpense = (
   setNewExpense({
     ...newExpense,
     amount: amount,
-    division: newExpense.division.map((division) => {
+    expenseDivision: newExpense.expenseDivision.map((division) => {
       return {
         ...division,
-        amountBorrowed: amount / newExpense.division.length,
+        amountBorrowed: amount / newExpense.expenseDivision.length,
       };
     }),
   });
+};
+
+export const _createNewExpense = async (
+  newExpense: CreateExpenseDto,
+  getCurrentGroup: (groupId: string) => Promise<void>,
+) => {
+  await createExpense(newExpense);
+  await getCurrentGroup(newExpense.groupId);
 };

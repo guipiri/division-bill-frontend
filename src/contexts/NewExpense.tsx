@@ -12,7 +12,7 @@ import { CurrentGroupContext } from './CurrentGroup';
 
 const initialState = {
   amount: 0,
-  division: [],
+  expenseDivision: [],
   name: '',
   payingMemberId: '',
   groupId: '',
@@ -40,7 +40,7 @@ export default function NewExpenseProvider({
   const [divisionType, setDivisionType] = useState<'equally' | 'unequally'>(
     'equally',
   );
-  console.log(newExpense);
+  // console.log(newExpense);
 
   const resetExpense = useCallback(() => {
     if (!currentGroup || !user) return;
@@ -48,7 +48,7 @@ export default function NewExpenseProvider({
     const initialState = {
       name: '',
       amount: 0,
-      division: currentGroup.members.map((member) => {
+      expenseDivision: currentGroup.members.map((member) => {
         return { userId: member.id, amountBorrowed: 0 };
       }),
       payingMemberId: user.id,

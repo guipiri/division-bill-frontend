@@ -20,5 +20,5 @@ export interface Expense {
 
 export interface CreateExpenseDto
   extends Omit<Expense, 'createdAt' | 'updatedAt' | 'id' | 'division'> {
-  division: Pick<Division, 'amountBorrowed' | 'userId'>[];
+  expenseDivision: Pick<Division, 'amountBorrowed' | 'userId'>[];
 }

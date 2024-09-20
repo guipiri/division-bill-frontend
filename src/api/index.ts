@@ -12,7 +12,7 @@ import {
   SignUpWithGoogle,
   SignWithCredentials,
 } from '@/src/types';
-import { Expense } from '@/src/types/Expense';
+import { CreateExpenseDto, Expense } from '@/src/types/Expense';
 import { Group } from '@/src/types/Group';
 import { User, UserFromGoogle } from '@/src/types/User';
 import axios from 'axios';
@@ -118,8 +118,9 @@ export const getGroupsByUserId = async (userId: string) => {
   return data;
 };
 
-export const createExpense = async (name: string) => {
-  return await axios.post<Response>(GROUPS_ENDPOINT, { name });
+export const createExpense = async (newExpense: CreateExpenseDto) => {
+  const { data } = await axios.post<Response>(EXPENSES_ENDPOINT, newExpense);
+  console.log(data);
 };
 
 export const getExpensesByGroupId = async (groupId: string) => {

@@ -1,5 +1,6 @@
 import {
   _addMemberToEquallyExpense,
+  _createExpense,
   _handleNewAmountsInEquallyExpense,
   _removeMemberFromEquallyExpense,
 } from '@/src/actions';
@@ -7,15 +8,37 @@ import { InputComponent } from '@/src/components/Input';
 import { Colors } from '@/src/constants/colors';
 import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
 import { NewExpenseContext } from '@/src/contexts/NewExpense';
-import { router } from 'expo-router';
+import { CreateExpenseDto } from '@/src/types/Expense';
+import { FontAwesome } from '@expo/vector-icons';
+import { router, Stack } from 'expo-router';
 import React, { useContext, useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
+const headerRight = (
+  newExpense: CreateExpenseDto,
+  getCurrentGroup: (groupId: string) => Promise<void>,
+) => (
+  <Pressable
+    onPress={() => {
+      _createExpense(newExpense, getCurrentGroup, router);
+    }}
+  >
+    {({ pressed }) => (
+      <FontAwesome
+        name="check"
+        size={25}
+        color={pressed ? Colors.Green : Colors.Foreground}
+        style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+      />
+    )}
+  </Pressable>
+);
+
 export default function CreateExpenseScreen() {
   const { newExpense, setNewExpense, resetExpense } =
     useContext(NewExpenseContext);
-  const { currentGroup } = useContext(CurrentGroupContext);
+  const { currentGroup, getCurrentGroup } = useContext(CurrentGroupContext);
 
   useEffect(() => {
     resetExpense();
@@ -23,6 +46,12 @@ export default function CreateExpenseScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: `${currentGroup?.name}`,
+          headerRight: () => headerRight(newExpense, getCurrentGroup),
+        }}
+      />
       <InputComponent.Root>
         <InputComponent.Label title="Nome da despesa" />
         <InputComponent.Input
@@ -122,13 +151,6 @@ export default function CreateExpenseScreen() {
                 style={{
                   width: '100%',
                   paddingVertical: 20,
-                }}
-                onPress={() => {
-                  setNewExpense({
-                    ...newExpense,
-                    payingMemberId: member.id,
-                  });
-                  router.back();
                 }}
               >
                 <Text

@@ -66,7 +66,9 @@ function RootLayoutNav() {
               options={{
                 ...options,
                 headerShown: false,
-                contentStyle: { backgroundColor: Colors.Backgroud },
+                contentStyle: {
+                  backgroundColor: Colors.Backgroud,
+                },
               }}
             />
             <Stack.Screen
@@ -84,7 +86,7 @@ function RootLayoutNav() {
             />
             <Stack.Screen
               name="group/expenses/create-expense"
-              options={{ title: 'Criar despesa' }}
+              options={{ ...options, title: 'Criar despesa' }}
             />
             <Stack.Screen
               name="group/expenses/who-paid"

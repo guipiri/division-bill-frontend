@@ -11,7 +11,12 @@ import { Group } from '../types/Group';
 export const CurrentGroupContext = createContext<{
   currentGroup: Group | null;
   setCurrentGroupId: React.Dispatch<React.SetStateAction<string | null>>;
-}>({ currentGroup: null, setCurrentGroupId: () => {} });
+  getCurrentGroup: (groupId: string) => Promise<void>;
+}>({
+  currentGroup: null,
+  setCurrentGroupId: () => {},
+  getCurrentGroup: async (groupId: string) => {},
+});
 
 export default function CurrentGroupProvider({
   children,
@@ -31,7 +36,9 @@ export default function CurrentGroupProvider({
   }, [getCurrentGroup, currentGroupId]);
 
   return (
-    <CurrentGroupContext.Provider value={{ currentGroup, setCurrentGroupId }}>
+    <CurrentGroupContext.Provider
+      value={{ currentGroup, setCurrentGroupId, getCurrentGroup }}
+    >
       {children}
     </CurrentGroupContext.Provider>
   );

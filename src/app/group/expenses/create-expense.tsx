@@ -1,3 +1,7 @@
+import {
+  _addMemberToEquallyExpense,
+  _removeMemberFromEquallyExpense,
+} from '@/src/actions';
 import { InputComponent } from '@/src/components/Input';
 import { Colors } from '@/src/constants/colors';
 import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
@@ -165,34 +169,17 @@ export default function CreateExpenseScreen() {
                 // iconStyle={{ borderColor: 'green' }}
                 onPress={(checked: boolean) => {
                   if (checked) {
-                    setNewExpense({
-                      ...newExpense,
-                      division: [
-                        ...newExpense.division.map((division) => ({
-                          ...division,
-                          amountBorrowed:
-                            newExpense.amount /
-                            (newExpense.division.length + 1),
-                        })),
-                        {
-                          userId: member.id,
-                          amountBorrowed:
-                            newExpense.amount /
-                            (newExpense.division.length + 1),
-                        },
-                      ],
-                    });
+                    _addMemberToEquallyExpense(
+                      newExpense,
+                      member,
+                      setNewExpense,
+                    );
                   } else {
-                    const newDivision = newExpense.division
-                      .filter((division) => division.userId !== member.id)
-                      .map((division, index, array) => ({
-                        ...division,
-                        amountBorrowed: newExpense.amount / array.length,
-                      }));
-                    setNewExpense({
-                      ...newExpense,
-                      division: newDivision,
-                    });
+                    _removeMemberFromEquallyExpense(
+                      newExpense,
+                      member,
+                      setNewExpense,
+                    );
                   }
                 }}
               />

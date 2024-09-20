@@ -12,6 +12,7 @@ import { SignWithCredentials } from '@/src/types';
 import { Group } from '@/src/types/Group';
 import { Router } from 'expo-router';
 import { Alert } from 'react-native';
+import { CreateExpenseDto } from '../types/Expense';
 
 export const _getExpensesByGroupId = async (groupId: string) => {
   try {
@@ -108,4 +109,41 @@ export const _signInWithGoogle = async (
 
     // Alert.alert('Erro', `${error.response.data.message}`);
   }
+};
+
+export const _addMemberToEquallyExpense = (
+  newExpense: CreateExpenseDto,
+  member: Group['members'][0],
+  setNewExpense: React.Dispatch<React.SetStateAction<CreateExpenseDto>>,
+) => {
+  setNewExpense({
+    ...newExpense,
+    division: [
+      ...newExpense.division.map((division) => ({
+        ...division,
+        amountBorrowed: newExpense.amount / (newExpense.division.length + 1),
+      })),
+      {
+        userId: member.id,
+        amountBorrowed: newExpense.amount / (newExpense.division.length + 1),
+      },
+    ],
+  });
+};
+
+export const _removeMemberFromEquallyExpense = (
+  newExpense: CreateExpenseDto,
+  member: Group['members'][0],
+  setNewExpense: React.Dispatch<React.SetStateAction<CreateExpenseDto>>,
+) => {
+  const newDivision = newExpense.division
+    .filter((division) => division.userId !== member.id)
+    .map((division, index, array) => ({
+      ...division,
+      amountBorrowed: newExpense.amount / array.length,
+    }));
+  setNewExpense({
+    ...newExpense,
+    division: newDivision,
+  });
 };

@@ -187,11 +187,3 @@ export const _handleNewAmountsInEquallyExpense = (
     }),
   });
 };
-
-export const _createNewExpense = async (
-  newExpense: CreateExpenseDto,
-  getCurrentGroup: (groupId: string) => Promise<void>,
-) => {
-  await createExpense(newExpense);
-  await getCurrentGroup(newExpense.groupId);
-};

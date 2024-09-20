@@ -1,5 +1,6 @@
 import {
   _addMemberToEquallyExpense,
+  _handleNewAmountsInEquallyExpense,
   _removeMemberFromEquallyExpense,
 } from '@/src/actions';
 import { InputComponent } from '@/src/components/Input';
@@ -8,14 +9,7 @@ import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
 import { NewExpenseContext } from '@/src/contexts/NewExpense';
 import { router } from 'expo-router';
 import React, { useContext, useEffect } from 'react';
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 export default function CreateExpenseScreen() {
@@ -32,30 +26,16 @@ export default function CreateExpenseScreen() {
       <InputComponent.Root>
         <InputComponent.Label title="Nome da despesa" />
         <InputComponent.Input
-          onChange={(e) => {
-            setNewExpense({ ...newExpense, name: e.nativeEvent.text });
+          onChange={({ nativeEvent: { text: name } }) => {
+            setNewExpense({ ...newExpense, name });
           }}
         />
       </InputComponent.Root>
       <InputComponent.Root>
         <InputComponent.Label title="Valor da despesa R$" />
         <InputComponent.Input
-          onChange={(e) => {
-            const amount = Number(e.nativeEvent.text.replaceAll(',', '.'));
-
-            if (isNaN(amount))
-              return Alert.alert('Opa!', 'Este campo deve ser um número!');
-
-            setNewExpense({
-              ...newExpense,
-              amount: amount,
-              division: newExpense.division.map((division) => {
-                return {
-                  ...division,
-                  amountBorrowed: amount / newExpense.division.length,
-                };
-              }),
-            });
+          onChange={({ nativeEvent: { text } }) => {
+            _handleNewAmountsInEquallyExpense(newExpense, text, setNewExpense);
           }}
           keyboardType="numeric"
         />
@@ -163,10 +143,6 @@ export default function CreateExpenseScreen() {
               <BouncyCheckbox
                 isChecked={true}
                 fillColor={Colors.Green}
-                // size={50}
-                // useBuiltInState={false}
-                // iconImageStyle={styles.iconImageStyle}
-                // iconStyle={{ borderColor: 'green' }}
                 onPress={(checked: boolean) => {
                   if (checked) {
                     _addMemberToEquallyExpense(

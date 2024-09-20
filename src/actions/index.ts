@@ -147,3 +147,25 @@ export const _removeMemberFromEquallyExpense = (
     division: newDivision,
   });
 };
+
+export const _handleNewAmountsInEquallyExpense = (
+  newExpense: CreateExpenseDto,
+  amountString: string,
+  setNewExpense: React.Dispatch<React.SetStateAction<CreateExpenseDto>>,
+) => {
+  const amount = Number(amountString.replaceAll(',', '.'));
+
+  if (isNaN(amount))
+    return Alert.alert('Opa!', 'Este campo deve ser um número!');
+
+  setNewExpense({
+    ...newExpense,
+    amount: amount,
+    division: newExpense.division.map((division) => {
+      return {
+        ...division,
+        amountBorrowed: amount / newExpense.division.length,
+      };
+    }),
+  });
+};

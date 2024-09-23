@@ -5,6 +5,7 @@ import {
   _removeMemberFromEquallyExpense,
 } from '@/src/actions';
 import { InputComponent } from '@/src/components/Input';
+import { ListMembers } from '@/src/components/ListMembers';
 import { Colors } from '@/src/constants/colors';
 import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
 import { NewExpenseContext } from '@/src/contexts/NewExpense';
@@ -149,30 +150,8 @@ export default function CreateExpenseScreen() {
       <View style={{ marginVertical: 30 }}>
         {currentGroup?.members.map((member) => {
           return (
-            <View
-              key={member.id}
-              style={{
-                flexDirection: 'row',
-                marginHorizontal: 40,
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Pressable
-                style={{
-                  width: '100%',
-                  paddingVertical: 20,
-                }}
-              >
-                <Text
-                  style={{
-                    color: Colors.Foreground,
-                    fontSize: 16,
-                  }}
-                >
-                  {member.name}
-                </Text>
-              </Pressable>
+            <ListMembers.ListMembersRoot id={member.id}>
+              <ListMembers.MemberName name={member.name as string} />
               <BouncyCheckbox
                 isChecked={true}
                 fillColor={Colors.Green}
@@ -192,7 +171,7 @@ export default function CreateExpenseScreen() {
                   }
                 }}
               />
-            </View>
+            </ListMembers.ListMembersRoot>
           );
         })}
       </View>

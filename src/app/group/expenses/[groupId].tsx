@@ -85,7 +85,7 @@ export default function ExpensesScreen() {
                   margin: 20,
                 }}
               >
-                R$ {expense.amount.toPrecision(4).replace('.', ',')}
+                R$ {expense.amount.toLocaleString('pt-BR', { currency: 'BRL' })}
               </Text>
             </View>
           );

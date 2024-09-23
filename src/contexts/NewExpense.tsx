@@ -40,7 +40,7 @@ export default function NewExpenseProvider({
   const [divisionType, setDivisionType] = useState<'equally' | 'unequally'>(
     'equally',
   );
-  // console.log(newExpense);
+  console.log(newExpense);
 
   const resetExpense = useCallback(() => {
     if (!currentGroup || !user) return;

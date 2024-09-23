@@ -11,9 +11,10 @@ import { NewExpenseContext } from '@/src/contexts/NewExpense';
 import { CreateExpenseDto } from '@/src/types/Expense';
 import { FontAwesome } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { Masks } from 'react-native-mask-input';
 
 const headerRight = (
   newExpense: CreateExpenseDto,
@@ -39,6 +40,7 @@ export default function CreateExpenseScreen() {
   const { newExpense, setNewExpense, resetExpense } =
     useContext(NewExpenseContext);
   const { currentGroup, getCurrentGroup } = useContext(CurrentGroupContext);
+  const [amount, setAmount] = useState<string>('');
 
   useEffect(() => {
     resetExpense();
@@ -55,16 +57,25 @@ export default function CreateExpenseScreen() {
       <InputComponent.Root>
         <InputComponent.Label title="Nome da despesa" />
         <InputComponent.Input
-          onChange={({ nativeEvent: { text: name } }) => {
-            setNewExpense({ ...newExpense, name });
+          mask={new Array(25).fill(/./)}
+          value={newExpense.name}
+          onChangeText={(masked, unmasked) => {
+            setNewExpense({ ...newExpense, name: unmasked });
           }}
         />
       </InputComponent.Root>
       <InputComponent.Root>
         <InputComponent.Label title="Valor da despesa R$" />
         <InputComponent.Input
-          onChange={({ nativeEvent: { text } }) => {
-            _handleNewAmountsInEquallyExpense(newExpense, text, setNewExpense);
+          mask={Masks.BRL_CURRENCY}
+          value={String(amount)}
+          onChangeText={(masked, unmasked) => {
+            setAmount(unmasked);
+            _handleNewAmountsInEquallyExpense(
+              newExpense,
+              masked,
+              setNewExpense,
+            );
           }}
           keyboardType="numeric"
         />

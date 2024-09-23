@@ -1,9 +1,9 @@
 import { Colors } from '@/src/constants/colors';
-import { TextInput, TextInputProps } from 'react-native';
+import MaskInput, { MaskInputProps } from 'react-native-mask-input';
 
-export default function Input(props: TextInputProps) {
+export default function Input(props: MaskInputProps) {
   return (
-    <TextInput
+    <MaskInput
       {...props}
       style={{
         borderBottomColor: Colors.Green,

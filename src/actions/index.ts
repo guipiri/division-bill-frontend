@@ -24,7 +24,10 @@ export const _getExpensesByGroupId = async (groupId: string) => {
   }
 };
 
-export const _createGroup = async (name: string | null, router: Router) => {
+export const _createGroup = async (
+  name: string | undefined,
+  router: Router,
+) => {
   if (!name) {
     return Alert.alert('Erro', 'O nome do grupo não pode ser vazio!');
   }
@@ -66,14 +69,15 @@ export const _createExpense = async (
 
   if (amount === 0)
     return Alert.alert('Erro', 'Uma despesa muito barata, não?');
+  console.log(newExpense);
 
   try {
     await createExpense(newExpense);
     await getCurrentGroup(newExpense.groupId);
     Alert.alert('Despesa criada!', '💸');
     router.back();
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.log(error.response.data.message);
   }
 };
 
@@ -132,21 +136,27 @@ export const _addMemberToEquallyExpense = (
   member: Group['members'][0],
   setNewExpense: React.Dispatch<React.SetStateAction<CreateExpenseDto>>,
 ) => {
-  setNewExpense({
-    ...newExpense,
-    expenseDivision: [
-      ...newExpense.expenseDivision.map((division) => ({
-        ...division,
-        amountBorrowed:
-          newExpense.amount / (newExpense.expenseDivision.length + 1),
-      })),
-      {
-        userId: member.id,
-        amountBorrowed:
-          newExpense.amount / (newExpense.expenseDivision.length + 1),
-      },
-    ],
-  });
+  // setNewExpense({
+  //   ...newExpense,
+  //   expenseDivision: [
+  //     ...newExpense.expenseDivision.map((division) => ({
+  //       ...division,
+  //       amountBorrowed:
+  //         newExpense.amount / (newExpense.expenseDivision.length + 1),
+  //     })),
+  //     {
+  //       userId: member.id,
+  //       amountBorrowed:
+  //         newExpense.amount / (newExpense.expenseDivision.length + 1),
+  //     },
+  //   ],
+  // });
+  newExpense.expenseDivision.push({ userId: member.id, amountBorrowed: 0 });
+  _handleNewAmountsInEquallyExpense(
+    newExpense,
+    String(newExpense.amount),
+    setNewExpense,
+  );
 };
 
 export const _removeMemberFromEquallyExpense = (
@@ -171,7 +181,12 @@ export const _handleNewAmountsInEquallyExpense = (
   amountString: string,
   setNewExpense: React.Dispatch<React.SetStateAction<CreateExpenseDto>>,
 ) => {
-  const amount = Number(amountString.replaceAll(',', '.'));
+  const amount = Number(
+    amountString.replace('R$ ', '').replaceAll('.', '').replaceAll(',', '.'),
+  );
+  console.log(
+    amountString.replace('R$', '').replaceAll('.', '').replaceAll(',', '.'),
+  );
 
   if (isNaN(amount))
     return Alert.alert('Opa!', 'Este campo deve ser um número!');
@@ -179,11 +194,27 @@ export const _handleNewAmountsInEquallyExpense = (
   setNewExpense({
     ...newExpense,
     amount: amount,
-    expenseDivision: newExpense.expenseDivision.map((division) => {
-      return {
-        ...division,
-        amountBorrowed: amount / newExpense.expenseDivision.length,
-      };
-    }),
+    expenseDivision: newExpense.expenseDivision.map(
+      (division, index, array) => {
+        if (index + 1 === array.length) {
+          // If the division is a recurring decimal, we set the last
+          // amountBorroed as the subtraction between the total amount and
+          // the total amountBorrowed to other user
+          return {
+            ...division,
+            amountBorrowed: Number(
+              (
+                amount -
+                (array.length - 1) * Number((amount / array.length).toFixed(2))
+              ).toFixed(2),
+            ),
+          };
+        }
+        return {
+          ...division,
+          amountBorrowed: Number((amount / array.length).toFixed(2)),
+        };
+      },
+    ),
   });
 };

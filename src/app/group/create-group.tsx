@@ -7,14 +7,15 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export default function CreateGroupScreen() {
-  const [groupName, setGroupName] = useState<string | null>(null);
+  const [groupName, setGroupName] = useState<string | undefined>(undefined);
   return (
     <View style={styles.container}>
       <InputComponent.Root>
         <InputComponent.Label title="Nome do grupo" />
         <InputComponent.Input
-          onChange={(e) => {
-            setGroupName(e.nativeEvent.text);
+          value={groupName}
+          onChangeText={(masked, unmasked) => {
+            setGroupName(unmasked);
           }}
         />
       </InputComponent.Root>

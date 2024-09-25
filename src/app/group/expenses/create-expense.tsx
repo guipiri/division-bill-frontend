@@ -5,15 +5,17 @@ import {
   _removeMemberFromEquallyExpense,
 } from '@/src/actions';
 import { InputComponent } from '@/src/components/Input';
-import { ListMembers } from '@/src/components/ListMembers';
+import { Member } from '@/src/components/Member';
+import TextForeground from '@/src/components/Text/TextForeground';
 import { Colors } from '@/src/constants/colors';
 import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
 import { NewExpenseContext } from '@/src/contexts/NewExpense';
+import { DivisionType } from '@/src/types/Division';
 import { CreateExpenseDto } from '@/src/types/Expense';
 import { FontAwesome } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { Masks } from 'react-native-mask-input';
 
@@ -41,7 +43,11 @@ export default function CreateExpenseScreen() {
   const { newExpense, setNewExpense, resetExpense } =
     useContext(NewExpenseContext);
   const { currentGroup, getCurrentGroup } = useContext(CurrentGroupContext);
-  const [amount, setAmount] = useState<string>('');
+  const [divisionType, setDivisionType] = useState<DivisionType>(
+    DivisionType.EQUALLY,
+  );
+  const [showDivisionTypesAccordion, setShowDivisionTypesAccordion] =
+    useState<boolean>(false);
 
   useEffect(() => {
     resetExpense();
@@ -65,13 +71,13 @@ export default function CreateExpenseScreen() {
           }}
         />
       </InputComponent.Root>
+
       <InputComponent.Root>
         <InputComponent.Label title="Valor da despesa R$" />
         <InputComponent.Input
           mask={Masks.BRL_CURRENCY}
-          value={String(amount)}
+          value={newExpense.amount.toFixed(2)}
           onChangeText={(masked, unmasked) => {
-            setAmount(unmasked);
             _handleNewAmountsInEquallyExpense(
               newExpense,
               masked,
@@ -81,97 +87,162 @@ export default function CreateExpenseScreen() {
           keyboardType="numeric"
         />
       </InputComponent.Root>
+
       <View style={{ alignItems: 'center', marginTop: 20 }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-          }}
-        >
-          <Text style={{ color: Colors.Foreground, fontSize: 16 }}>
-            Pago por{' '}
-          </Text>
+        <View style={styles.expenseResume}>
+          <TextForeground>Pago por </TextForeground>
+
           <Pressable
-            style={{
-              backgroundColor: Colors.CurrentLine,
-              borderRadius: 10,
-              marginVertical: 10,
-            }}
+            style={{ ...styles.pressableButton, marginVertical: 10 }}
             onPress={() => router.push('/group/expenses/who-paid')}
           >
-            <Text
-              style={{
-                fontWeight: 'bold',
-                color: Colors.Foreground,
-                marginHorizontal: 10,
-                fontSize: 16,
-                marginVertical: 5,
-              }}
-            >
-              {
-                currentGroup?.members.filter(
+            <TextForeground style={styles.textButton}>
+              {currentGroup?.members
+                .filter(
                   (members) => members.id === newExpense.payingMemberId,
-                )[0].name
-              }
-            </Text>
+                )[0]
+                .name?.toUpperCase()}
+            </TextForeground>
           </Pressable>
-          <Text
-            style={{
-              color: Colors.Foreground,
-              fontSize: 16,
-            }}
-          >
-            {' '}
-            e dividido{' '}
-          </Text>
-          <Pressable
-            style={{
-              backgroundColor: Colors.CurrentLine,
-              borderRadius: 10,
-            }}
-          >
-            <Text
+
+          <TextForeground> e dividido </TextForeground>
+
+          {!showDivisionTypesAccordion && (
+            <Pressable
+              style={styles.pressableButton}
+              onPress={() => setShowDivisionTypesAccordion(true)}
+            >
+              <TextForeground style={styles.textButton}>
+                {divisionType}
+              </TextForeground>
+            </Pressable>
+          )}
+
+          {showDivisionTypesAccordion && (
+            <View
               style={{
-                fontWeight: 'bold',
-                color: Colors.Foreground,
-                marginHorizontal: 10,
-                fontSize: 16,
-                marginVertical: 5,
+                ...styles.pressableButton,
+                width: 180,
               }}
             >
-              IGUALMENTE
-            </Text>
-          </Pressable>
+              <Pressable
+                onPress={() => {
+                  setDivisionType(DivisionType.EQUALLY);
+                  setShowDivisionTypesAccordion(false);
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <TextForeground style={styles.textButton}>
+                  IGUALMENTE
+                </TextForeground>
+                {divisionType === DivisionType.EQUALLY && (
+                  <FontAwesome
+                    size={20}
+                    name="check"
+                    color={Colors.Green}
+                    style={{ marginRight: 10 }}
+                  />
+                )}
+              </Pressable>
+
+              <Pressable
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+                onPress={() => {
+                  setDivisionType(DivisionType.UNEQUALLY);
+                  setShowDivisionTypesAccordion(false);
+                }}
+              >
+                <TextForeground style={styles.textButton}>
+                  DESIGUALMENTE
+                </TextForeground>
+                {divisionType === DivisionType.UNEQUALLY && (
+                  <FontAwesome
+                    size={20}
+                    name="check"
+                    color={Colors.Green}
+                    style={{ marginRight: 10 }}
+                  />
+                )}
+              </Pressable>
+            </View>
+          )}
         </View>
       </View>
 
       <View style={{ marginVertical: 30 }}>
         {currentGroup?.members.map((member) => {
+          const amountBorrowed = newExpense.expenseDivision.filter(
+            (division) => division.userId === member.id,
+          )[0]?.amountBorrowed;
+          console.log(amountBorrowed);
+
           return (
-            <ListMembers.ListMembersRoot id={member.id}>
-              <ListMembers.MemberName name={member.name as string} />
-              <BouncyCheckbox
-                isChecked={true}
-                fillColor={Colors.Green}
-                onPress={(checked: boolean) => {
-                  if (checked) {
-                    _addMemberToEquallyExpense(
-                      newExpense,
-                      member,
-                      setNewExpense,
-                    );
-                  } else {
-                    _removeMemberFromEquallyExpense(
-                      newExpense,
-                      member,
-                      setNewExpense,
-                    );
-                  }
-                }}
-              />
-            </ListMembers.ListMembersRoot>
+            <Member.MemberRoot key={member.id}>
+              <Member.MemberName name={member.name as string} />
+              {divisionType === DivisionType.EQUALLY && (
+                <BouncyCheckbox
+                  isChecked={true}
+                  fillColor={Colors.Green}
+                  onPress={(checked: boolean) => {
+                    if (checked) {
+                      _addMemberToEquallyExpense(
+                        newExpense,
+                        member,
+                        setNewExpense,
+                      );
+                    } else {
+                      _removeMemberFromEquallyExpense(
+                        newExpense,
+                        member,
+                        setNewExpense,
+                      );
+                    }
+                  }}
+                />
+              )}
+
+              {divisionType === DivisionType.UNEQUALLY && (
+                <InputComponent.Root>
+                  <InputComponent.Input
+                    mask={Masks.BRL_CURRENCY}
+                    value={amountBorrowed.toFixed(2)}
+                    onChangeText={(masked, unmasked) => {
+                      setNewExpense({
+                        ...newExpense,
+                        expenseDivision: newExpense.expenseDivision.map(
+                          (division) => {
+                            if (division.userId === member.id) {
+                              console.log(masked);
+
+                              return {
+                                ...division,
+                                amountBorrowed: Number(
+                                  masked
+                                    .replace('R$ ', '')
+                                    .replaceAll('.', '')
+                                    .replaceAll(',', '.'),
+                                ),
+                              };
+                            }
+
+                            return division;
+                          },
+                        ),
+                      });
+                    }}
+                    keyboardType="numeric"
+                  />
+                </InputComponent.Root>
+              )}
+            </Member.MemberRoot>
           );
         })}
       </View>
@@ -184,5 +255,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.Backgroud,
     paddingHorizontal: 20,
+  },
+  textButton: {
+    fontWeight: 'bold',
+    marginHorizontal: 10,
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  pressableButton: {
+    backgroundColor: Colors.CurrentLine,
+    borderRadius: 10,
+  },
+  expenseResume: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
 });

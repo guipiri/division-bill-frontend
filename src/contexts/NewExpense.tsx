@@ -37,10 +37,6 @@ export default function NewExpenseProvider({
 
   const { currentGroup } = useContext(CurrentGroupContext);
   const [newExpense, setNewExpense] = useState<CreateExpenseDto>(initialState);
-  const [divisionType, setDivisionType] = useState<'equally' | 'unequally'>(
-    'equally',
-  );
-  console.log(newExpense);
 
   const resetExpense = useCallback(() => {
     if (!currentGroup || !user) return;

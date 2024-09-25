@@ -184,9 +184,6 @@ export const _handleNewAmountsInEquallyExpense = (
   const amount = Number(
     amountString.replace('R$ ', '').replaceAll('.', '').replaceAll(',', '.'),
   );
-  console.log(
-    amountString.replace('R$', '').replaceAll('.', '').replaceAll(',', '.'),
-  );
 
   if (isNaN(amount))
     return Alert.alert('Opa!', 'Este campo deve ser um número!');

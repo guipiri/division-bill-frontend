@@ -11,3 +11,8 @@ export interface Division {
 
   updatedAt: Date;
 }
+
+export enum DivisionType {
+  EQUALLY = 'IGUALMENTE',
+  UNEQUALLY = 'DESIGUALMENTE',
+}

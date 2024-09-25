@@ -13,9 +13,9 @@ export interface Expense {
 
   division: Division[];
 
-  createdAt: Date;
+  createdAt: string;
 
-  updatedAt: Date;
+  updatedAt: string;
 }
 
 export interface CreateExpenseDto

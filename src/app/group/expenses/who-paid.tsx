@@ -1,4 +1,4 @@
-import { ListMembers } from '@/src/components/ListMembers';
+import { Member } from '@/src/components/Member';
 import { Colors } from '@/src/constants/colors';
 import { CurrentGroupContext } from '@/src/contexts/CurrentGroup';
 import { NewExpenseContext } from '@/src/contexts/NewExpense';
@@ -16,8 +16,9 @@ export default function WhoPaidScreen() {
     <View style={{ marginTop: 30 }}>
       {currentGroup?.members.map((member) => {
         return (
-          <ListMembers.ListMembersRoot id={member.id}>
-            <ListMembers.MemberName
+          <Member.MemberRoot key={member.id} style={{ alignItems: 'center' }}>
+            <Member.MemberName
+              style={{ width: '100%' }}
               name={member.name as string}
               onPress={() => {
                 setNewExpense({
@@ -30,7 +31,7 @@ export default function WhoPaidScreen() {
             {member.id === newExpense?.payingMemberId && (
               <FontAwesome size={20} name="check" color={Colors.Green} />
             )}
-          </ListMembers.ListMembersRoot>
+          </Member.MemberRoot>
         );
       })}
     </View>

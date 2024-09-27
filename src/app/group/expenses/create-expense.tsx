@@ -65,7 +65,6 @@ export default function CreateExpenseScreen() {
         <InputComponent.Label title="Nome da despesa" />
         <InputComponent.Input
           mask={new Array(25).fill(/./)}
-          value={newExpense.name}
           onChangeText={(masked, unmasked) => {
             setNewExpense({ ...newExpense, name: unmasked });
           }}
@@ -73,10 +72,9 @@ export default function CreateExpenseScreen() {
       </InputComponent.Root>
 
       <InputComponent.Root>
-        <InputComponent.Label title="Valor da despesa R$" />
+        <InputComponent.Label title="Valor da despesa" />
         <InputComponent.Input
           mask={Masks.BRL_CURRENCY}
-          value={newExpense.amount.toFixed(2)}
           onChangeText={(masked, unmasked) => {
             _handleNewAmountsInEquallyExpense(
               newExpense,
@@ -182,7 +180,6 @@ export default function CreateExpenseScreen() {
           const amountBorrowed = newExpense.expenseDivision.filter(
             (division) => division.userId === member.id,
           )[0]?.amountBorrowed;
-          console.log(amountBorrowed);
 
           return (
             <Member.MemberRoot key={member.id}>
@@ -220,8 +217,6 @@ export default function CreateExpenseScreen() {
                         expenseDivision: newExpense.expenseDivision.map(
                           (division) => {
                             if (division.userId === member.id) {
-                              console.log(masked);
-
                               return {
                                 ...division,
                                 amountBorrowed: Number(
